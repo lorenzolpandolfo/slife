@@ -2,16 +2,11 @@
 
 * {
   padding: 0;
-  border: 0;
+  margin: 0;
   box-sizing: border-box;
 }
 
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-
   --primary: #ff5a5f;
   --secondary: #ffd700;
   --dark: #222222;
@@ -21,4 +16,12 @@
   --accent: #00a699;
 
   font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: white;
+}
+
+.page {
+  background-color: var(--light);
 }
