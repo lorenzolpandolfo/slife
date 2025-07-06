@@ -5,9 +5,7 @@ import InputChat from "../../components/chat/InputChat";
 export default function ChatPage() {
   return (
     <section className="chat-page page">
-      <div className="chat-container">
-        <Chat />
-      </div>
+      <Chat />
     </section>
   );
 }
