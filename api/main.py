@@ -1,12 +1,13 @@
+import time
+import uuid
 from dotenv import load_dotenv
-
-from fastapi import FastAPI, HTTPException
-
+from fastapi import FastAPI, HTTPException, Header
 from pydantic import BaseModel
-
 from google import genai
 from google.genai import types
+from fastapi.middleware.cors import CORSMiddleware
 
+load_dotenv()
 
 DEFAULT_INSTRUCTION = """
 Você se chama Lucas, o assistente automatizado da empresa SLife, que realiza locação de imóveis para universitários no Brasil. Responda em tom profissional sem enrolação.
@@ -25,35 +26,79 @@ Não invente nomes de rua, seja direto: Kitnet em São Paulo, valor do aluguel X
 Caso não tenha certeza do nome do usuário, não diga-o.
 """
 
-
-load_dotenv()
-
 client = genai.Client()
 
 csv_file = client.files.upload(
     file="./slife_imoveis.csv", config={"mimeType": "text/csv"}
 )
 
-chat = client.chats.create(
-    model="gemini-2.0-flash",
-    config=types.GenerateContentConfig(
-        system_instruction=DEFAULT_INSTRUCTION,
-        temperature=0.1,
-    ),
-)
-
-
-response = chat.send_message(
-    ["Segue a base de dados de imóveis da SLife. Se apresente formalmente.", csv_file]
-)
-print(response.text + "\n")
-
-
 app = FastAPI()
 
-if __name__ == "__main__":
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    while True:
-        msg = input("\n> Mensagem: ")
-        response = chat.send_message([msg])
-        print(response.text + "\n")
+SESSIONS = {}
+TTL_SECONDS = 86400
+
+
+class ChatRequest(BaseModel):
+    message: str
+    token: str
+
+
+@app.get("/start")
+def start_session():
+    token = str(uuid.uuid4())
+    chat = client.chats.create(
+        model="gemini-2.0-flash",
+        config=types.GenerateContentConfig(
+            system_instruction=DEFAULT_INSTRUCTION,
+            temperature=0.1,
+        ),
+    )
+
+    chat.send_message(
+        [
+            csv_file,
+        ]
+    )
+
+    SESSIONS[token] = {
+        "chat": chat,
+        "messages": [],
+        "expires_at": time.time() + TTL_SECONDS,
+    }
+
+    return {"token": token}
+
+
+@app.post("/chat")
+def chat_endpoint(request: ChatRequest):
+    session = SESSIONS.get(request.token)
+
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    if session["expires_at"] < time.time():
+        del SESSIONS[request.token]
+        raise HTTPException(status_code=401, detail="Token expired")
+
+    try:
+        chat = session["chat"]
+        session["messages"].append(
+            {"id": str(uuid.uuid4()), "role": "user", "content": request.message}
+        )
+
+        response = chat.send_message([request.message])
+        session["messages"].append(
+            {"id": str(uuid.uuid4()), "role": "assistant", "content": response.text}
+        )
+
+        return {"messages": session["messages"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
