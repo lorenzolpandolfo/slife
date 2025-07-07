@@ -6,3 +6,10 @@
   padding: 10px 0;
   min-height: 90vh;
 }
+
+.new-chat-button {
+  position: absolute;
+  left: 0;
+  margin: 10px 10px 10px 30px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}

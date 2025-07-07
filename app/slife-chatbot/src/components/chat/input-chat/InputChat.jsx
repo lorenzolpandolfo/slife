@@ -7,6 +7,14 @@ export default function InputChat() {
   const [message, setMessage] = useState("");
   const { setMessages, clearMessages, messages } = useMessages();
 
+  const sendWelcomeMessage = () => {
+    clearMessages();
+    addGhostMessage(
+      "Olá, bem vindo ao atendimento automatizado da S4Life! Para iniciar a conversa, envie uma mensagem.",
+      "assistant"
+    );
+  };
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       sendMessage();
@@ -14,7 +22,10 @@ export default function InputChat() {
   };
 
   useEffect(() => {
-    loadChatHistory();
+    const history = loadChatHistory();
+    if (!history) {
+      sendWelcomeMessage();
+    }
   }, []);
 
   const getChatToken = async () => {
@@ -38,17 +49,19 @@ export default function InputChat() {
       try {
         const parsedHistory = JSON.parse(history);
         setMessages(parsedHistory);
+        return true;
       } catch (e) {
         setMessages([]);
+        return false;
       }
     }
   };
 
   const sendMessage = async () => {
-    console.log("enviando mensagem:", message);
+    handleGhostMessagesOnSend();
     setMessage("");
 
-    if (!message.trim()) return;
+    if (!message || !message.trim()) return;
 
     try {
       const token = await getChatToken();
@@ -64,30 +77,57 @@ export default function InputChat() {
       );
     } catch (error) {
       handleClearMessages();
-    } finally {
-      // scrollar o chat para o final
     }
+  };
+
+  const handleGhostMessagesOnSend = () => {
+    addGhostMessage(message, "user");
+    addGhostMessage("...", "assistant", true);
+  };
+
+  const addGhostMessage = (content, role, writing) => {
+    if (!content || !role) return;
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { content: content, role: role, ghost: true, writing: writing },
+    ]);
   };
 
   const handleClearMessages = () => {
     clearMessages();
     localStorage.removeItem("chat-token");
+    localStorage.removeItem("chat-history");
+    sendWelcomeMessage();
   };
 
   return (
-    <div className="input-chat">
-      <input
-        type="text"
-        name="msg-input"
-        id="msg-input"
-        placeholder="Digite a sua mensagem..."
-        onChange={(e) => setMessage(e.target.value)}
-        value={message}
-        onKeyDown={handleKeyDown}
-      />
-      <button type="button" className="send-button">
-        <img src="src/assets/send.svg" alt="send button" />
+    <>
+      <button
+        type="button"
+        className="new-chat-button circular-button"
+        title="Criar nova conversa"
+        onClick={handleClearMessages}
+      >
+        <img src="src/assets/new_chat.svg" alt="New Chat" />
       </button>
-    </div>
+      <div className="input-chat">
+        <input
+          type="text"
+          name="msg-input"
+          id="msg-input"
+          placeholder="Digite a sua mensagem..."
+          onChange={(e) => setMessage(e.target.value)}
+          value={message}
+          onKeyDown={handleKeyDown}
+        />
+        <button
+          type="button"
+          className="send-button circular-button"
+          onClick={sendMessage}
+        >
+          <img src="src/assets/send.svg" alt="send button" />
+        </button>
+      </div>
+    </>
   );
 }

@@ -1,8 +1,9 @@
 .chat-message {
+  position: relative;
   padding-bottom: 10px;
   display: flex;
   color: var(--light);
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 500;
 }
 
@@ -22,4 +23,85 @@
   padding: 10px 15px;
   border-radius: 15px;
   max-width: 45vw;
+  z-index: 1;
+
+  li {
+    margin-left: 20px;
+  }
+
+  animation-name: fade-in;
+  animation-duration: 0.25s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.writing {
+  padding: 10px 15px;
+  border-radius: 15px;
+  z-index: 1;
+  color: transparent;
+  width: 70px;
+  height: 45px;
+  opacity: 0;
+  animation-delay: 2s;
+}
+
+.sent-by-detail {
+  position: absolute;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 20%;
+  z-index: -1;
+}
+
+.sent-by-detail.user-color {
+  right: 0;
+}
+
+.sent-by-detail.bot-color {
+  left: 0;
+}
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.typing-indicator {
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  height: 20px;
+  margin: 10px;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  background-color: var(--light);
+  border-radius: 50%;
+  margin: 0 4px;
+  z-index: 10;
+  opacity: 0.8;
+  animation: bounce 0.6s infinite alternate;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-8px);
+  }
 }

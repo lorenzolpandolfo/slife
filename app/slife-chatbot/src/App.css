@@ -25,3 +25,18 @@ body {
 .page {
   background-color: var(--light);
 }
+
+.circular-button {
+  padding: 10px;
+  border-radius: 50%;
+  border: none;
+  background-color: white;
+  transition: all 0.15s ease-in-out;
+}
+
+.circular-button:hover {
+  cursor: pointer;
+  scale: 1.1;
+  background-color: var(--light);
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 15px;
+}
