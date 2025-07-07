@@ -62,6 +62,33 @@
 .sent-by-detail.bot-color {
   left: 0;
 }
+
+.message-author-name {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 2;
+}
+
+.message-author-icon {
+  width: 50px;
+  border-radius: 50%;
+  position: absolute;
+}
+
+.message-author-icon.from-bot {
+  left: -65px;
+  animation-name: fade-in;
+  opacity: 0;
+  animation-delay: 2s;
+  animation-duration: 0.25s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.message-author-icon.from-user {
+  right: -65px;
+}
+
 @keyframes fade-in {
   0% {
     opacity: 0;
