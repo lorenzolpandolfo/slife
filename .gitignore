@@ -166,3 +166,4 @@ dist-ssr
 *.sln
 *.sw?
 
+__pycache__
