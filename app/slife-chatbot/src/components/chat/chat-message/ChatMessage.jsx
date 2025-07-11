@@ -7,7 +7,9 @@ export default function ChatMessage({ content, fromUser, writing }) {
       <img
         src={`src/assets/${fromUser ? "user_pfp.svg" : "lucas_pfp.svg"}`}
         alt="Icon"
-        className={`message-author-icon ${fromUser ? "from-user" : "from-bot"}`}
+        className={`message-author-icon ${
+          fromUser ? "from-user" : "from-bot"
+        } ${writing ? "writing-message" : ""}`}
       />
 
       <div
