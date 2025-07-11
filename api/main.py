@@ -115,7 +115,7 @@ def chat_endpoint(request: ChatRequest):
     session = SESSIONS.get(request.token)
 
     if not session:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
+        raise HTTPException(status_code=401, detail="Invalid token")
 
     if session["expires_at"] < time.time():
         del SESSIONS[request.token]
@@ -135,3 +135,5 @@ def chat_endpoint(request: ChatRequest):
         return {"messages": session["messages"]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+

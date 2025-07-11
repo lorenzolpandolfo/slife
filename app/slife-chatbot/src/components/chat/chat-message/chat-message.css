@@ -132,3 +132,29 @@
     transform: translateY(-8px);
   }
 }
+
+@media (max-width: 600px) {
+  .chat-message-content {
+    max-width: 90%;
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  .message-author-icon {
+    width: 35px;
+  }
+
+  .message-author-icon.from-bot {
+    left: -38px;
+    animation-name: fade-in;
+    opacity: 0;
+    animation-delay: 2s;
+    animation-duration: 0.25s;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+  }
+
+  .message-author-icon.from-user {
+    right: -38px;
+  }
+}

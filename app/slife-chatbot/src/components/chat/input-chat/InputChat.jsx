@@ -38,7 +38,6 @@ export default function InputChat() {
       console.error("Error fetching chat token:", res);
       return null;
     }
-    console.log("Chat token received:", res.data.token);
     localStorage.setItem("chat-token", res.data.token);
     return res.data.token;
   };

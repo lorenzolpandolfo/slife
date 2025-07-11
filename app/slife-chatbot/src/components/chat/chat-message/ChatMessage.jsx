@@ -26,7 +26,7 @@ export default function ChatMessage({ content, fromUser, writing }) {
         />
       </div>
       {writing && (
-        <div class="typing-indicator">
+        <div className="typing-indicator">
           <span></span>
           <span></span>
           <span></span>
