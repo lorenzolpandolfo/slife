@@ -57,10 +57,10 @@ export default function InputChat() {
   };
 
   const sendMessage = async () => {
+    if (!message || !message.trim()) return;
+
     handleGhostMessagesOnSend();
     setMessage("");
-
-    if (!message || !message.trim()) return;
 
     try {
       const token = await getChatToken();
