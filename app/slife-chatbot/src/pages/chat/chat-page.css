@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 0;
-  height: 85vh;
+  height: 87vh;
 }
 
 .new-chat-button {
@@ -14,10 +14,15 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+@media (min-width: 1441px) {
+  .chat-page {
+    height: 90vh;
+  }
+}
+
 @media (max-width: 600px) {
   .chat-page {
     padding: 0;
-    height: 83vh;
   }
 
   .new-chat-button {

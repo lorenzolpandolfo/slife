@@ -1,6 +1,5 @@
 .input-chat {
   background-color: var(--light);
-  position: fixed;
   margin-bottom: 10px;
   bottom: 0;
   z-index: 1;
